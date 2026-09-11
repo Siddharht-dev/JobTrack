@@ -1,15 +1,10 @@
+const jobRoutes = require("./Routes/JobRoutes");
+const userRoutes = require("./Routes/UserRoutes");
 const express = require("express");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const auth = require("./Middleware/Authentication")
 require("dotenv").config();
-
 const app = express();
-
 const mongoose = require("mongoose");
 
-const Job = require("./Models/Jobs")
-const User = require("./Models/User")
 
 mongoose.connect(process.env.MONGO_URI)
     .then(()=>{
@@ -21,129 +16,9 @@ mongoose.connect(process.env.MONGO_URI)
 
 app.use(express.json());
 
-//This is for Jobs
+app.use("/jobs", jobRoutes);
+app.use("/", userRoutes)
 
-app.get("/jobs", auth, async (req, res) => {
-    try {
-        const jobs = await Job.find({userId : req.userId});
-        res.json(jobs);
-    }
-    catch (err) {
-        console.log(err);
-        res.status(500).send("Something went wrong");
-    }
-});
-
-
-app.post("/jobs",auth, async (req, res)=>{
-    try{
-
-        const job = await Job.create({
-            ...req.body,
-            userId:req.userId
-        });
-        res.send("Job received");
-    }
-    catch(err){
-        res.status(500).send("Something went wrong");
-    }
-})
-
-
-app.put("/jobs/:id", auth, async (req, res) => {
-    try {
-        const job = await Job.findOneAndUpdate({
-            userId:req.userId,
-            _id: req.params.id
-        },
-        req.body);
-
-        if(!job){
-            return res.status(404).send("Job not found");
-        }
-
-        res.json(job);
-    }
-    catch (err) {
-        console.log(err);
-        res.status(500).send("Something went wrong");
-    }
-});
-
-
-app.delete("/jobs/:id", auth, async (req, res) => {
-    try {
-        const job = await Job.findOneAndDelete({
-            _id: req.params.id,
-            userId: req.userId
-        });
-
-        if(!job){
-            return res.status(404).send("Job not found");
-        }
-
-        res.json(job);
-    }
-    catch (err) {
-        console.log(err);
-        res.status(500).send("Something went wrong");
-    }
-});
-
-//This is for the User
-
-app.post("/register", async (req, res)=>{ //Regiter
-    try {
-        const hashPassword = await bcrypt.hash(req.body.password, 10);
-
-        const userData = {
-            name : req.body.name,
-            email : req.body.email,
-            password : hashPassword
-        }
-        const user = await User.create(userData);
-        res.send("User created");
-    }
-    catch (err) {
-        console.log(err)
-        return res.status(500).send("Something went wrong")
-    }
-})
-
-app.post("/login", async (req, res)=>{ //Login
-    try {
-        const user = await User.findOne({
-            email: req.body.email,
-        });
-
-        if(!user){
-            return res.status(404).send("User does not exist");
-        }
-
-        const isPasswordCorrect = await bcrypt.compare(
-            req.body.password,
-            user.password,
-        )
-
-        if(!isPasswordCorrect) {
-            return res.status(401).send("Password is wrong");
-        }
-
-        const token = jwt.sign(
-            {userId: user._id},
-            process.env.JWT_SECRET,
-        )
-
-        res.json({
-            message: "User logged in",
-            token: token,
-        })
-    }
-    catch (err) {
-        console.log(err);
-        return res.status(500).send("Something went wrong");
-    }
-})
 
 
 app.listen(3001, () => {
