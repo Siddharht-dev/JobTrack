@@ -1,6 +1,7 @@
 const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const auth = require("./Middleware/Authentication")
 require("dotenv").config();
 
 const app = express();
@@ -22,9 +23,9 @@ app.use(express.json());
 
 //This is for Jobs
 
-app.get("/jobs", async (req, res) => {
+app.get("/jobs", auth, async (req, res) => {
     try {
-        const jobs = await Job.find();
+        const jobs = await Job.find({userId : req.userId});
         res.json(jobs);
     }
     catch (err) {
@@ -34,9 +35,13 @@ app.get("/jobs", async (req, res) => {
 });
 
 
-app.post("/jobs", async (req, res)=>{
+app.post("/jobs",auth, async (req, res)=>{
     try{
-        const job = await Job.create(req.body);
+
+        const job = await Job.create({
+            ...req.body,
+            userId:req.userId
+        });
         res.send("Job received");
     }
     catch(err){
@@ -45,12 +50,13 @@ app.post("/jobs", async (req, res)=>{
 })
 
 
-app.put("/jobs/:id", async (req, res) => {
+app.put("/jobs/:id", auth, async (req, res) => {
     try {
-        const job = await Job.findByIdAndUpdate(
-            req.params.id,
-            req.body
-        );
+        const job = await Job.findOneAndUpdate({
+            userId:req.userId,
+            _id: req.params.id
+        },
+        req.body);
 
         if(!job){
             return res.status(404).send("Job not found");
@@ -65,9 +71,12 @@ app.put("/jobs/:id", async (req, res) => {
 });
 
 
-app.delete("/jobs/:id", async (req, res) => {
+app.delete("/jobs/:id", auth, async (req, res) => {
     try {
-        const job = await Job.findByIdAndDelete(req.params.id);
+        const job = await Job.findOneAndDelete({
+            _id: req.params.id,
+            userId: req.userId
+        });
 
         if(!job){
             return res.status(404).send("Job not found");
