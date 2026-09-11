@@ -4,6 +4,7 @@ const express = require("express");
 require("dotenv").config();
 const app = express();
 const mongoose = require("mongoose");
+const cors = require("cors");
 
 
 mongoose.connect(process.env.MONGO_URI)
@@ -14,6 +15,7 @@ mongoose.connect(process.env.MONGO_URI)
         console.log("MongoDB connection failed: ",err);
     })
 
+app.use(cors());
 app.use(express.json());
 
 app.use("/jobs", jobRoutes);
