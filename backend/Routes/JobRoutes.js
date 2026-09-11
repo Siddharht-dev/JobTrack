@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
-import auth from "../Middleware/Authentication";
+const auth = require("../Middleware/Authentication");
+const Job = require("../Models/Jobs");
+
 router.get("/", auth, async (req, res) => {
     try {
         const jobs = await Job.find({userId : req.userId});
