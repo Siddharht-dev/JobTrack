@@ -14,6 +14,25 @@ router.get("/", auth, async (req, res) => {
     }
 });
 
+router.get("/:id", auth, async (req, res) => {
+    try {
+        const job = await Job.findOne({
+            _id: req.params.id,
+            userId: req.userId
+        });
+
+        if (!job) {
+            return res.status(404).send("Job not found");
+        }
+
+        res.json(job);
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send("Something went wrong");
+    }
+});
+
 
 router.post("/",auth, async (req, res)=>{
     try{
