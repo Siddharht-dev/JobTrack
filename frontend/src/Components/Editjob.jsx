@@ -11,37 +11,54 @@ export const Editjob = () => {
 
 
     const editHandler = async () => {
-    const token = localStorage.getItem("token");
-
-    const response = await axios.get(`http://localhost:3001/jobs/${id}`, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
-    });
-
-    setJob(response.data);
-}
-
-    const updateJobHandler = async () => {
+    try {
         const token = localStorage.getItem("token");
 
-        const response = await axios.put(`http://localhost:3001/jobs/${id}`, {
-            company: job.company,
-            title: job.title,
-            location: job.location,
-            salary: job.salary,
-            status: job.status
-        }, {
+
+
+        const response = await axios.get(`http://localhost:3001/jobs/${id}`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         });
-        navigate("/")
+
+        setJob(response.data);
+    } catch (error) {
+        console.error("Error fetching job:", error);
+    }
+}
+
+    const updateJobHandler = async () => {
+        try {
+            const token = localStorage.getItem("token");
+
+            const response = await axios.put(`http://localhost:3001/jobs/${id}`, {
+                company: job.company,
+                title: job.title,
+                location: job.location,
+                salary: job.salary,
+                status: job.status
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            navigate("/")
+        } catch (error) {
+            console.error("Error updating job:", error);
+        }
     }
 
     useEffect(() => {
-        editHandler();
-    }, [])
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+        navigate("/login");
+        return;
+    }
+
+    editHandler();
+}, [])
 
     console.log(id)
     return (

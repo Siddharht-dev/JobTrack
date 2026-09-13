@@ -9,16 +9,19 @@ export const Register = () => {
     const [password, setPassword] = React.useState("")
 
     const handleSubmit = async ()=>{
-        
-        const response = await axios.post("http://localhost:3001/register",{
-            name,
-            email,
-            password,
-        });
+        try {
+            const response = await axios.post("http://localhost:3001/register",{
+                name,
+                email,
+                password,
+            });
 
-        console.log(response.data)
+            console.log(response.data)
 
-        navigate("/login")
+            navigate("/login")
+        } catch (error) {
+            console.error("Error registering:", error);
+        }
     }
   return (
     <div>
@@ -44,6 +47,8 @@ export const Register = () => {
         />
 
         <button onClick={handleSubmit}>Register</button>
+        <p>Already have a account?</p>
+        <button onClick={()=>navigate("/Login")}>Login</button>
     </div>
   )
 }

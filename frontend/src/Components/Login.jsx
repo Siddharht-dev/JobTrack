@@ -8,14 +8,18 @@ export const Login = () => {
     const navigate = useNavigate();
 
     const handleLoginButton = async  ()=>{
-        const response = await axios.post("http://localhost:3001/login",{
-            email,
-            password
-        });
+        try {
+            const response = await axios.post("http://localhost:3001/login",{
+                email,
+                password
+            });
 
-        localStorage.setItem("token", response.data.token)
+            localStorage.setItem("token", response.data.token)
 
-        navigate("/")
+            navigate("/")
+        } catch (error) {
+            console.error("Error logging in:", error);
+        }
     }
   return (
     <div>
@@ -34,6 +38,8 @@ export const Login = () => {
         />
 
         <button onClick={handleLoginButton}>Login</button>
+        <p>Dont have a account</p>
+        <button onClick={()=> navigate("/Register")}>Register</button>
     </div>
   )
 }

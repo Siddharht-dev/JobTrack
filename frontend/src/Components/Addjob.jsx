@@ -1,5 +1,5 @@
 import axios from 'axios'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 export const Addjob = () => {
@@ -14,20 +14,33 @@ export const Addjob = () => {
 
     const token = localStorage.getItem("token");
 
-    const addJobHandler = async () => {
-        const response = await axios.post("http://localhost:3001/jobs", {
-            company,
-            title,
-            location,
-            salary,
-            status
-        }, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
+    useEffect(() => {
+    const token = localStorage.getItem("token");
 
-        navigate("/");
+    if (!token) {
+        navigate("/login");
+        return;
+    }
+}, []);
+
+    const addJobHandler = async () => {
+        try {
+            const response = await axios.post("http://localhost:3001/jobs", {
+                company,
+                title,
+                location,
+                salary,
+                status
+            }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+
+            navigate("/");
+        } catch (error) {
+            console.error("Error adding job:", error);
+        }
     }
     return (
         <div>
