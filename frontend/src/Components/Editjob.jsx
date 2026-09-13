@@ -62,42 +62,53 @@ export const Editjob = () => {
 
     console.log(id)
     return (
-        <div>
+        <div className="min-h-screen flex items-center justify-center bg-slate-50">
             {job && (
-                <>
+                <div className="w-full max-w-sm bg-white rounded-xl shadow-md p-8">
+                    <h1 className="text-2xl font-semibold text-slate-800 mb-6">Edit Job</h1>
+
                     <input
                         type="text"
                         value={job.company}
                         onChange={(e) => setJob({ ...job, company: e.target.value })}
+                        className="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
 
                     <input
                         type="text"
                         value={job.title}
                         onChange={(e) => setJob({ ...job, title: e.target.value })}
+                        className="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
 
                     <input
                         type="text"
                         value={job.location}
                         onChange={(e) => setJob({ ...job, location: e.target.value })}
+                        className="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
 
                     <input
                         type="text"
                         value={job.salary}
                         onChange={(e) => setJob({ ...job, salary: e.target.value })}
+                        className="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
 
                     <input
                         type="text"
                         value={job.status}
                         onChange={(e) => setJob({ ...job, status: e.target.value })}
+                        className="w-full border border-slate-300 rounded-lg px-3 py-2 mb-4 text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
-                    <button onClick={updateJobHandler}>Update Job</button>
-                </>
+                    <button
+                    onClick={updateJobHandler}
+                    className="w-full bg-emerald-600 hover:bg-emerald-700 transition-colors text-white font-medium rounded-lg py-2"
+                    >
+                        Update Job
+                    </button>
+                </div>
             )}
-
         </div>
     )
 }

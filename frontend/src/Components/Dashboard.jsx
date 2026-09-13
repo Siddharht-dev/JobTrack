@@ -54,21 +54,51 @@ const Dashboard = () => {
         }
     }
     return (
-        <div>
-            <h1>Dashboard</h1>
-            <button onClick={() => navigate("/add-job")}>Add Job</button>
-            {jobs.map((job) => (
-                <div key={job._id}>
-                    <h3>{job.company}</h3>
-                    <p>{job.title}</p>
-                    <p>{job.location}</p>
-                    <p>{job.salary}</p>
-                    <p>{job.status}</p>
-                    <button onClick={() => navigate(`/edit-job/${job._id}`)}>Edit</button>
-                    <button onClick={() => deleteJobHandler(job._id)}>Delete</button>
+        <div className="min-h-screen bg-slate-50 px-4 py-8">
+            <div className="max-w-2xl mx-auto">
+                <div className="flex items-center justify-between mb-8">
+                    <h1 className="text-2xl font-semibold text-slate-800">Dashboard</h1>
+                    <Logout />
                 </div>
-            ))}
-            <Logout />
+
+                <button
+                onClick={() => navigate("/add-job")}
+                className="mb-6 bg-indigo-600 hover:bg-indigo-700 transition-colors text-white font-medium rounded-lg px-4 py-2"
+                >
+                    Add Job
+                </button>
+
+                <div className="flex flex-col gap-4">
+                    {jobs.map((job) => (
+                        <div
+                        key={job._id}
+                        className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-5 flex items-center justify-between"
+                        >
+                            <div>
+                                <h3 className="text-lg font-semibold text-slate-800">{job.company}</h3>
+                                <p className="text-slate-600">{job.title}</p>
+                                <p className="text-slate-500 text-sm">{job.location}</p>
+                                <p className="text-slate-500 text-sm">{job.salary}</p>
+                                <p className="text-slate-500 text-sm">{job.status}</p>
+                            </div>
+                            <div className="flex gap-2">
+                                <button
+                                onClick={() => navigate(`/edit-job/${job._id}`)}
+                                className="bg-blue-500 hover:bg-blue-600 transition-colors text-white font-medium rounded-lg px-3 py-2"
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                onClick={() => deleteJobHandler(job._id)}
+                                className="bg-red-500 hover:bg-red-600 transition-colors text-white font-medium rounded-lg px-3 py-2"
+                                >
+                                    Delete
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
         </div>
     )
 }
